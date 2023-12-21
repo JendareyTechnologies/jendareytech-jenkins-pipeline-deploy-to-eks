@@ -1,5 +1,5 @@
 data "aws_availability_zones" "azs" {}
-module "myapp-vpc" {
+module "jendarey_vpc" {
   source          = "terraform-aws-modules/vpc/aws"
   version         = "3.19.0"
   name            = "jendarey_vpc"
