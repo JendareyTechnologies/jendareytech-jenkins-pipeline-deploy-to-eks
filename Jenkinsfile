@@ -8,7 +8,7 @@ pipeline {
         AWS_DEFAULT_REGION = "us-east-1"
     }
     stages {
-        stage("Create an EKS Cluster") {
+        stage("Creating a Votingapp EKS Cluster") {
             steps {
                 script {
                     dir('terraform') {
@@ -18,7 +18,7 @@ pipeline {
                 }
             }
         }
-        stage("Deploy to EKS") {
+        stage("Deploying to Votingapp EKS Cluster") {
             steps {
                 script {
                     dir('kubernetes') {
