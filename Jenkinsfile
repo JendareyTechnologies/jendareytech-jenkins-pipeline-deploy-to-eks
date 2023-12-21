@@ -1,4 +1,5 @@
-#!/usr/bin/env groovy
+#!/usr/bin/
+
 pipeline {
     agent any
     environment {
@@ -22,8 +23,10 @@ pipeline {
                 script {
                     dir('kubernetes') {
                         sh "aws eks update-kubeconfig --name myapp-eks-cluster"
-                        sh "kubectl apply -f nginx-deployment.yaml"
-                        sh "kubectl apply -f nginx-service.yaml"
+                        sh "kubectl apply -f mongodb-manifest.yaml"
+                        sh "kubectl apply -f mongodb-service-manifest.yaml"
+                        sh "kubectl apply -f votingapp-manifest.yaml"
+                        sh "kubectl apply -f votingapp-service-manifest.yaml"
                     }
                 }
             }

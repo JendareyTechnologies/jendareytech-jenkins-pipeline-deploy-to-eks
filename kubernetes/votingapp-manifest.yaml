@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: votingapp-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: votingapp-service
+  template:
+    metadata:
+      labels:
+        app: votingapp-service
+    spec:
+      containers:
+      - name: votingapp-container
+        image: jendaredocker/jendarey-voting-app-main
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MONGO_DB_USERNAME
+          value: proddb
+        - name: MONGO_DB_PASSWORD
+          value: proddb@123
+        - name: MONGO_DB_HOSTNAME
+          value: mongo
