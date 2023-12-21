@@ -6,8 +6,8 @@ module "eks" {
 
     cluster_endpoint_public_access  = true
 
-    vpc_id = module.jendarey_vpc.vpc_id
-    subnet_ids = module.jendarey_vpc.private_subnets
+    vpc_id = module.jendarey_vpc_eks.vpc_id
+    subnet_ids = module.jendarey_vpc_eks.private_subnets
 
     tags = {
         environment = "production"
