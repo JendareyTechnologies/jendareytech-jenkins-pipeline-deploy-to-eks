@@ -1,8 +1,6 @@
-data "aws_availability_zones" "azs" {}
-module "jendarey_vpc" {
+module "jendarey_vpc_eks" {
   source          = "terraform-aws-modules/vpc/aws"
-
-  name            = "jendarey_vpc"
+  name            = "jendarey_vpc_eks"
   cidr            = var.vpc_cidr_block
   private_subnets = var.private_subnet_cidr_blocks
   public_subnets  = var.public_subnet_cidr_blocks
@@ -18,11 +16,13 @@ module "jendarey_vpc" {
 
   public_subnet_tags = {
     "kubernetes.io/cluster/votingapp-eks-cluster" = "shared"
-    "kubernetes.io/role/elb"                  = 1
+    "kubernetes.io/role/elb"                      = 1
   }
 
   private_subnet_tags = {
     "kubernetes.io/cluster/votingapp-eks-cluster" = "shared"
-    "kubernetes.io/role/internal-elb"         = 1
+    "kubernetes.io/role/internal-elb"             = 1
   }
 }
+
+data "aws_availability_zones" "azs" {}
