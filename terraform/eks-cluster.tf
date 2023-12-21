@@ -15,7 +15,7 @@ module "eks" {
     }
 
     eks_managed_node_groups = {
-    prod-eks-votingapp-node = {
+    prod-node = {
             min_size = 1
             max_size = 3
             desired_size = 2
