@@ -22,7 +22,7 @@ pipeline {
             steps {
                 script {
                     dir('kubernetes') {
-                        sh "aws eks update-kubeconfig --name myapp-eks-cluster"
+                        sh "aws eks update-kubeconfig --name votingapp-eks-cluster"
                         sh "kubectl apply -f mongodb-manifest.yaml"
                         sh "kubectl apply -f mongodb-service-manifest.yaml"
                         sh "kubectl apply -f votingapp-manifest.yaml"
