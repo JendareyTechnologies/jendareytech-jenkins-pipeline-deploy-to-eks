@@ -37,3 +37,33 @@ resource "aws_subnet" "public_subnets" {
   }
 }
 
+
+# Define security group for EKS cluster communication
+resource "aws_security_group" "votingapp-cluster" {
+  name        = "terraform-eks-votingapp-cluster"
+  description = "Cluster communication with worker nodes"
+  vpc_id      = aws_vpc.votingapp.id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "terraform-eks-votingapp"
+  }
+}
+
+# Define security group rule for allowing workstation to communicate with the cluster API Server
+resource "aws_security_group_rule" "votingapp-cluster-ingress-workstation-https" {
+  cidr_blocks       = [local.workstation_external_cidr]
+  description       = "Allow workstation to communicate with the cluster API Server"
+  from_port         = 443
+  protocol          = "tcp"
+  security_group_id = aws_security_group.votingapp-cluster.id
+  to_port           = 443
+  type              = "ingress"
+}
+
