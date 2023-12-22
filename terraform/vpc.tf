@@ -1,28 +1,39 @@
-module "jendarey_vpc_eks" {
-  source          = "terraform-aws-modules/vpc/aws"
-  name            = "jendarey_vpc_eks"
-  cidr            = var.vpc_cidr_block
-  private_subnets = var.private_subnet_cidr_blocks
-  public_subnets  = var.public_subnet_cidr_blocks
-  azs             = data.aws_availability_zones.azs.names
-
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
+# Define VPC
+resource "aws_vpc" "votingapp" {
+  cidr_block = "10.0.0.0/16"
+  enable_dns_support = true
   enable_dns_hostnames = true
 
   tags = {
-    "kubernetes.io/cluster/votingapp-eks-cluster" = "shared"
-  }
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/votingapp-eks-cluster" = "shared"
-    "kubernetes.io/role/elb"                      = 1
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/votingapp-eks-cluster" = "shared"
-    "kubernetes.io/role/internal-elb"             = 1
+    Name = "terraform-eks-votingapp"
   }
 }
 
-data "aws_availability_zones" "azs" {}
+# Define private subnets
+resource "aws_subnet" "private_subnets" {
+  count = length(var.private_subnet_cidr_blocks)
+
+  vpc_id                  = aws_vpc.votingapp.id
+  cidr_block              = var.private_subnet_cidr_blocks[count.index]
+  availability_zone       = element(var.availability_zones, count.index)
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name = "private-subnet-${count.index + 1}"
+  }
+}
+
+# Define public subnets
+resource "aws_subnet" "public_subnets" {
+  count = length(var.public_subnet_cidr_blocks)
+
+  vpc_id                  = aws_vpc.votingapp.id
+  cidr_block              = var.public_subnet_cidr_blocks[count.index]
+  availability_zone       = element(var.availability_zones, count.index)
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "public-subnet-${count.index + 1}"
+  }
+}
+
