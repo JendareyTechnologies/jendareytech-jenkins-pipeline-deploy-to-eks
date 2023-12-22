@@ -37,6 +37,18 @@ resource "aws_subnet" "public_subnets" {
   }
 }
 
+# Define security group rule for allowing workstation to communicate with the cluster API Server
+resource "aws_security_group_rule" "votingapp-cluster-ingress-workstation-https" {
+  cidr_blocks       = [var.workstation_external_cidr]
+  description       = "Allow workstation to communicate with the cluster API Server"
+  from_port         = 443
+  protocol          = "tcp"
+  security_group_id = aws_security_group.votingapp-cluster.id
+  to_port           = 443
+  type              = "ingress"
+}
+
+
 
 # Define security group for EKS cluster communication
 resource "aws_security_group" "votingapp-cluster" {
