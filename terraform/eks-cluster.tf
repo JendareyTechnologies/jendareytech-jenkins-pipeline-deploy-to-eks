@@ -1,27 +1,26 @@
-# Define the EKS cluster
-resource "aws_eks_cluster" "votingapp" {
-  name     = var.cluster_name
-  role_arn = aws_iam_role.votingapp-cluster.arn
+module "eks" {
+    source  = "terraform-aws-modules/eks/aws"
+    version = "~> 19.0"
+    cluster_name = "votingapp-eks-cluster"
+    cluster_version = "1.26"
 
-  vpc_config {
-    security_group_ids = [aws_security_group.votingapp-cluster.id]
-    subnet_ids         = aws_subnet.public_subnets[*].id  # Using public subnets for simplicity, adjust as needed
-  }
+    cluster_endpoint_public_access  = true
 
-  depends_on = [
-    aws_iam_role_policy_attachment.votingapp-cluster-AmazonEKSClusterPolicy,
-    aws_iam_role_policy_attachment.votingapp-cluster-AmazonEKSServicePolicy,
-  ]
+    vpc_id = module.jendarey_vpc_eks.vpc_id
+    subnet_ids = module.jendarey_vpc_eks.private_subnets
 
-  # Managed Node Groups
-  eks_managed_node_groups = {
-    prod-node = {
-      min_size       = 1
-      max_size       = 3
-      desired_size   = 2
-      instance_types = ["t2.medium"]
-      volume_size    = 20
+    tags = {
+        environment = "production"
+        application = "votingapp"
     }
-    # Add more managed node groups if needed
-  }
+
+    eks_managed_node_groups = {
+    prod-node = {
+            min_size = 1
+            max_size = 3
+            desired_size = 2
+            instance_types = ["t2.medium"]
+            volume_size    = 20
+        }
+    }
 }
